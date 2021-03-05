@@ -1,0 +1,15 @@
+version: '3'
+services:
+  # service名
+  app:
+    # コンテナ名
+    container_name: update-tool
+    # イメージ名
+    image: update-tool
+    # ビルドに使用するDockerfileがあるディレクトリ指定
+    build: .
+    # マウントディレクトリ指定
+    volumes:
+      - .:/go/src/github.com/jigyakkuma/splat-database
+    ports:
+      - '8080:8080'
