@@ -1,7 +1,17 @@
+FROM node:15.11.0-buster as vue-builder
+
+WORKDIR /app
+
+COPY src ./src
+COPY package.json ./
+COPY tsconfig.json ./
+RUN yarn install
+RUN yarn build
+
 # Use the offical golang image to create a binary.
 # This is based on Debian and sets the GOPATH to /go.
 # https://hub.docker.com/_/golang
-FROM golang:1.15-buster as builder
+FROM golang:1.15-buster as go-builder
 
 # Create and change to the app directory.
 WORKDIR /app
@@ -27,8 +37,8 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
     rm -rf /var/lib/apt/lists/*
 
 # Copy the binary to the production image from the builder stage.
-COPY --from=builder /app/server /app/server
-COPY dist/ ./app/dist
+COPY --from=go-builder /app/server /app/server
+COPY --from=vue-builder /app/dist /app/dist
 
 # Run the web service on container startup.
 CMD ["/app/server"]
