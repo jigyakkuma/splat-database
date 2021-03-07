@@ -1,10 +1,9 @@
-FROM node:15.11.0-buster as vue-builder
+FROM node:15.11.0-buster-slim as vue-builder
 
 WORKDIR /app
 
 COPY src ./src
-COPY package.json ./
-COPY tsconfig.json ./
+COPY package.json tsconfig.json babel.config.js vue.config.js ./
 RUN yarn install
 RUN yarn build
 
